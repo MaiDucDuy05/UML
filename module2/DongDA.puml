@@ -1,0 +1,51 @@
+@startuml
+actor "Admin/PM" as User
+
+participant "U I" as UI
+participant "Authorization Service"
+participant "Project Group Service" as System
+participant "Task Management Service"
+participant "Database" as DB
+participant "Notification Service"
+
+User -> UI: Chọn nhóm dự án và xác nhận đóng nhóm
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền truy cập
+activate "Authorization Service"
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Gửi yêu cầu đóng nhóm dự án
+activate System
+
+System -> "Task Management Service": Kiểm tra nhiệm vụ chưa hoàn thành
+activate "Task Management Service"
+
+alt Không còn nhiệm vụ
+    "Task Management Service" --> System: OK
+    deactivate "Task Management Service"
+
+    System -> DB: Cập nhật trạng thái nhóm thành "Đóng"
+    activate DB
+    DB --> System: Cập nhật thành công
+    deactivate DB
+
+    System -> "Notification Service": Gửi thông báo nhóm đã đóng
+    activate "Notification Service"
+    "Notification Service" --> User: Thông báo nhóm dự án đã đóng
+    deactivate "Notification Service"
+
+    System --> UI: Xác nhận đóng nhóm thành công
+    deactivate System
+    UI --> User: Hiển thị trạng thái mới "Đóng"
+
+else Còn nhiệm vụ chưa hoàn thành
+    "Task Management Service" --> System: Lỗi - Còn nhiệm vụ chưa hoàn thành
+    deactivate "Task Management Service"
+    System --> UI: Hiển thị lỗi "Nhóm còn nhiệm vụ chưa hoàn thành"
+    UI --> User: Hiển thị lỗi chi tiết
+    deactivate System
+end
+
+@enduml

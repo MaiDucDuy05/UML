@@ -1,0 +1,42 @@
+@startuml
+actor "Admin/PM/TL/TM/Client" as U
+
+participant "UI" as UI
+participant "Authorization Service"
+participant "Task Management Service" as System
+participant "Database" as DB
+
+U -> UI: Yêu cầu xem tiến độ nhiệm vụ
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền truy cập
+activate "Authorization Service"
+
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Yêu cầu lấy dữ liệu tiến độ
+activate System
+
+System -> DB: Truy vấn thông tin tiến độ mới nhất
+activate DB
+
+alt Có cập nhật tiến độ
+    DB --> System: Trả về dữ liệu tiến độ
+    deactivate DB
+
+    System --> UI: Hiển thị tiến độ nhiệm vụ
+    deactivate System
+    UI --> U: Hiển thị thông tin tiến độ
+
+else Không có cập nhật tiến độ
+    DB --> System: Trả về trạng thái "Không có cập nhật tiến độ"
+    deactivate DB
+
+    System --> UI: Hiển thị thông báo "Không có cập nhật tiến độ"
+    deactivate System
+    UI --> U: Hiển thị thông báo
+
+end
+
+@enduml

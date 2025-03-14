@@ -1,0 +1,41 @@
+@startuml
+actor "PM/TL" as User
+
+participant "UI" as UI
+participant "Authorization Service"
+participant "Task Management Service" as System
+participant "Database" as DB
+
+User -> UI: Chỉnh sửa thông tin nhiệm vụ
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền chỉnh sửa
+activate "Authorization Service"
+
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Gửi yêu cầu cập nhật nhiệm vụ
+activate System
+
+System -> DB: Kiểm tra hợp lệ và lưu thông tin cập nhật
+activate DB
+
+alt Dữ liệu hợp lệ
+    DB --> System: Lưu thay đổi thành công
+    deactivate DB
+
+    System --> UI: Cập nhật giao diện với thông tin mới
+    deactivate System
+    UI --> User: Hiển thị phiên bản mới của nhiệm vụ
+
+else Dữ liệu không hợp lệ
+    DB --> System: Trả về lỗi dữ liệu không hợp lệ
+    deactivate DB
+
+    System --> UI: Hiển thị thông báo lỗi
+    deactivate System
+    UI --> User: Yêu cầu kiểm tra lại thông tin
+end
+
+@enduml

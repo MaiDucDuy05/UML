@@ -1,0 +1,51 @@
+@startuml
+actor "PM/TL" as User
+
+participant "UI" as UI
+participant "Authorization Service"
+participant "Task Management Service" as System
+participant "Database" as DB
+participant "Notification Service"
+
+User -> UI: Nhập thông tin nhiệm vụ mới
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền tạo nhiệm vụ
+activate "Authorization Service"
+
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Gửi yêu cầu tạo nhiệm vụ
+activate System
+
+System -> DB: Kiểm tra trùng lặp và tính hợp lệ
+activate DB
+
+alt Dữ liệu hợp lệ, không trùng lặp
+    DB --> System: Hợp lệ, tiến hành lưu trữ
+    System -> DB: Lưu nhiệm vụ mới vào cơ sở dữ liệu
+    DB --> System: Lưu thành công
+    deactivate DB
+
+    System --> UI: Hiển thị nhiệm vụ mới trong danh sách
+    deactivate System
+    UI --> User: Xác nhận tạo nhiệm vụ thành công
+
+    alt Cần gửi thông báo đến các bên liên quan
+        UI -> "Notification Service": Gửi thông báo cập nhật
+        activate "Notification Service"
+        "Notification Service" --> User: Nhận thông báo về nhiệm vụ mới
+        deactivate "Notification Service"
+    end
+
+else Dữ liệu không hợp lệ hoặc bị trùng
+    DB --> System: Trả về lỗi dữ liệu không hợp lệ
+    deactivate DB
+
+    System --> UI: Hiển thị thông báo lỗi chi tiết
+    deactivate System
+    UI --> User: Thông báo lỗi và yêu cầu sửa đổi
+end
+
+@enduml

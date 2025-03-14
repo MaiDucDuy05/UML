@@ -1,0 +1,22 @@
+@startuml
+actor "Người dùng" as User
+participant "Notification Service" as System
+
+User -> System : Đăng nhập vào hệ thống
+System --> User : Hiển thị giao diện chính
+
+== Nhận thông báo nhiệm vụ & dự án ==
+System -> System : Kiểm tra sự kiện nhiệm vụ & dự án mới
+alt Có thông báo mới
+    System --> User : Gửi thông báo nhiệm vụ & dự án
+else Không có thông báo mới
+    System --> User : Hiển thị "Không có thông báo mới"
+end
+
+== Xử lý lỗi ==
+alt Lỗi truy xuất dữ liệu
+    System --> User : Hiển thị thông báo lỗi chung
+    User -> System : Thử lại sau
+end
+
+@enduml

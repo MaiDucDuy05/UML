@@ -1,0 +1,30 @@
+@startuml
+actor "Người dùng" as User
+participant "Notification Service" as System
+
+User -> System : Truy cập vào Cấu hình thông báo
+System -> System : Hiển thị giao diện thiết lập thông báo
+
+== Người dùng nhập cấu hình ==
+User -> System : Chọn loại thông báo cần nhận
+User -> System : Chọn kênh nhận thông báo (email, push, ...)
+User -> System : Chọn tần suất nhận thông báo
+User -> System : Xác nhận lưu cấu hình
+
+== Xử lý dữ liệu ==
+System -> System : Kiểm tra tính hợp lệ của dữ liệu
+alt Dữ liệu hợp lệ
+    System -> System : Lưu cấu hình vào hệ thống
+    System --> User : Hiển thị xác nhận "Lưu thành công"
+    System -> System : Áp dụng cấu hình ngay lập tức
+else Dữ liệu không hợp lệ
+    System --> User : Hiển thị lỗi chi tiết, yêu cầu kiểm tra lại
+end
+
+== Xử lý lỗi ==
+alt Lỗi hệ thống khi lưu trữ
+    System --> User : Hiển thị thông báo lỗi chung
+    User -> System : Yêu cầu thử lại sau
+end
+
+@enduml

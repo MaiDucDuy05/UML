@@ -1,0 +1,49 @@
+@startuml
+actor "Admin/PM" as User
+
+participant "U I" as UI
+participant "Authorization Service"
+participant "Project Group Service" as System
+participant "Database" as DB
+
+User -> UI: Nhập thông tin nhóm dự án
+activate User
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền truy cập
+activate "Authorization Service"
+
+alt Người dùng có quyền
+    "Authorization Service" --> UI: Quyền hợp lệ
+    deactivate "Authorization Service"
+    
+    UI -> System: Gửi yêu cầu tạo nhóm dự án
+    activate System
+
+    System -> DB: Kiểm tra trùng lặp tên nhóm
+    activate DB
+
+    alt Tên nhóm đã tồn tại
+        DB --> System: Từ chối tạo nhóm
+        deactivate DB
+        System --> UI: Hiển thị lỗi "Tên nhóm đã tồn tại"
+        UI --> User: Hiển thị lỗi "Tên nhóm đã tồn tại"
+
+    else Tên nhóm hợp lệ
+        DB --> System: Cho phép tạo nhóm
+        deactivate DB
+        System -> DB: Lưu nhóm dự án mới
+        activate DB
+        DB --> System: Lưu thành công
+        deactivate DB
+        System --> UI: Xác nhận tạo nhóm thành công
+        deactivate System
+        UI --> User: Hiển thị thông báo thành công
+    end
+else Người dùng không có quyền
+    "Authorization Service" --> UI: Hiển thị lỗi "Bạn không có quyền tạo nhóm"
+    deactivate "Authorization Service"
+    UI --> User: Hiển thị lỗi "Bạn không có quyền tạo nhóm"
+end
+
+@enduml

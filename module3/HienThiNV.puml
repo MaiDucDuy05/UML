@@ -1,0 +1,42 @@
+@startuml
+actor "PM/TL/TM/Client" as U
+
+participant "UI" as UI
+participant "Authorization Service"
+participant "Task Management Service" as System
+participant "Database" as DB
+
+U -> UI: Chọn chế độ hiển thị nhiệm vụ
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền truy cập
+activate "Authorization Service"
+
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Yêu cầu dữ liệu nhiệm vụ theo chế độ đã chọn
+activate System
+
+System -> DB: Truy vấn dữ liệu nhiệm vụ
+activate DB
+
+alt Có dữ liệu nhiệm vụ
+    DB --> System: Trả về danh sách nhiệm vụ
+    deactivate DB
+
+    System --> UI: Hiển thị nhiệm vụ theo chế độ đã chọn
+    deactivate System
+    UI --> U: Cập nhật giao diện với chế độ hiển thị mới
+
+else Không có dữ liệu nhiệm vụ
+    DB --> System: Trả về trạng thái "Không có dữ liệu nhiệm vụ"
+    deactivate DB
+
+    System --> UI: Hiển thị thông báo "Không có dữ liệu nhiệm vụ"
+    deactivate System
+    UI --> U: Thông báo và đề xuất kiểm tra tiêu chí lọc
+
+end
+
+@enduml

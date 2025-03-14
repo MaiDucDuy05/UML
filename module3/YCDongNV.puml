@@ -1,0 +1,50 @@
+@startuml
+actor "Team Member" as U
+
+participant "UI" as UI
+participant "Authorization Service"
+participant "Task Management Service" as System
+participant "Database" as DB
+participant "Notification Service"
+
+U -> UI: Gửi yêu cầu đóng nhiệm vụ
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền yêu cầu đóng
+activate "Authorization Service"
+
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Xử lý yêu cầu đóng nhiệm vụ
+activate System
+
+System -> DB: Kiểm tra điều kiện đóng nhiệm vụ
+activate DB
+
+alt Đủ điều kiện đóng
+    DB --> System: Đạt điều kiện đóng
+    System -> DB: Cập nhật trạng thái nhiệm vụ thành "Đóng"
+    DB --> System: Cập nhật thành công
+    deactivate DB
+
+    System --> UI: Hiển thị xác nhận nhiệm vụ đã đóng
+    deactivate System
+    UI --> U: Xác nhận đóng nhiệm vụ thành công
+
+    UI -> "Notification Service": Gửi thông báo cập nhật
+    activate "Notification Service"
+    "Notification Service" --> U: Nhận thông báo đóng nhiệm vụ
+    deactivate "Notification Service"
+
+else Chưa đủ điều kiện đóng
+    DB --> System: Trả về lý do từ chối
+    deactivate DB
+
+    System --> UI: Hiển thị cảnh báo điều kiện chưa đạt
+    deactivate System
+    UI --> U: Thông báo từ chối và hướng dẫn xử lý
+
+end
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+actor "PM/TL" as User
+
+participant "UI" as UI
+participant "Authorization Service"
+participant "Task Management Service" as System
+participant "Database" as DB
+participant "Notification Service"
+
+User -> UI: Chọn nhiệm vụ và thành viên thực hiện
+activate UI
+
+UI -> "Authorization Service": Kiểm tra quyền phân công
+activate "Authorization Service"
+
+"Authorization Service" --> UI: Quyền hợp lệ
+deactivate "Authorization Service"
+
+UI -> System: Gửi yêu cầu phân công nhiệm vụ
+activate System
+
+System -> DB: Kiểm tra hợp lệ và lưu thông tin phân công
+activate DB
+
+alt Thành viên hợp lệ
+    DB --> System: Lưu thành công
+    deactivate DB
+
+    System --> UI: Cập nhật thông tin trên giao diện
+    deactivate System
+    UI --> User: Xác nhận phân công thành công
+
+    UI -> "Notification Service": Gửi thông báo cập nhật
+    activate "Notification Service"
+    "Notification Service" --> User: Nhận thông báo phân công
+    deactivate "Notification Service"
+
+else Thành viên không hợp lệ
+    DB --> System: Trả về lỗi phân công
+    deactivate DB
+
+    System --> UI: Hiển thị thông báo lỗi
+    deactivate System
+    UI --> User: Yêu cầu sửa thông tin phân công
+end
+
+@enduml

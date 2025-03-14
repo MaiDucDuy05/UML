@@ -1,0 +1,66 @@
+@startuml
+skinparam linetype ortho
+skinparam monochrome false
+skinparam usecase {
+    BackgroundColor LightBlue
+    BorderColor Black
+    FontSize 12
+}
+
+left to right direction
+
+' Định nghĩa Actor với màu sắc riêng biệt
+actor "Super Admin" as SA #red
+actor "Admin" as A #green
+actor "Project Manager" as PM #blue
+actor "Team Lead" as TL #purple
+
+' Nhóm chức năng "Quản lý nhóm dự án"
+rectangle "Quản lý nhóm dự án" {
+    (Tìm kiếm & lọc nhóm) as UC1
+    (Tạo nhóm dự án) as UC2
+    (Thêm thành viên vào nhóm) as UC3
+    (Xóa thành viên khỏi nhóm) as UC4
+    (Chỉnh sửa thông tin nhóm) as UC5
+    (Cấu hình nhóm làm việc) as UC6
+    (Đóng nhóm dự án) as UC7
+    (Xóa nhóm dự án) as UC8
+}
+
+' Kết nối các Actor với Use Case chính
+SA -[#red]-> UC1
+SA -[#red]-> UC2
+SA -[#red]-> UC3
+SA -[#red]-> UC4
+SA -[#red]-> UC5
+SA -[#red]-> UC6
+SA -[#red]-> UC7
+SA -[#red]-> UC8
+
+A -[#green]-> UC1
+A -[#green]-> UC2
+A -[#green]-> UC3
+A -[#green]-> UC4
+A -[#green]-> UC5
+A -[#green]-> UC6
+A -[#green]-> UC7
+A -[#green]-> UC8
+
+PM -[#blue]-> UC1
+PM -[#blue]-> UC3
+PM -[#blue]-> UC5
+PM -[#blue]-> UC6
+
+TL -[#purple]-> UC1
+TL -[#purple]-> UC3
+TL -[#purple]-> UC4
+
+' Quan hệ include để thể hiện sự phụ thuộc
+UC2 ..> UC3 : «include»
+UC3 ..> UC4 : «include»
+UC5 ..> UC6 : «include»
+
+' Quan hệ extend để thể hiện sự mở rộng
+UC4 ..|> UC3 : «extend»
+
+@enduml
