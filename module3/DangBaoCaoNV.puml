@@ -5,7 +5,6 @@ participant "UI" as UI
 participant "Authorization Service"
 participant "Task Report Service" as System
 participant "Database" as DB
-participant "Notification Service"
 
 U -> UI: Nhập nội dung báo cáo nhiệm vụ
 activate UI
@@ -31,11 +30,6 @@ alt Dữ liệu hợp lệ
     System --> UI: Hiển thị báo cáo trên giao diện
     deactivate System
     UI --> U: Xác nhận đăng báo cáo thành công
-
-    UI -> "Notification Service": Gửi thông báo cập nhật
-    activate "Notification Service"
-    "Notification Service" --> U: Nhận thông báo về báo cáo mới
-    deactivate "Notification Service"
 
 else Dữ liệu không hợp lệ
     DB --> System: Trả về lỗi dữ liệu không hợp lệ

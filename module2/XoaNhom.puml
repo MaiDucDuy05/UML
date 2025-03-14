@@ -6,7 +6,7 @@ participant "Authorization Service"
 participant "Project Group Service" as System
 participant "Task Management Service"
 participant "Database" as DB
-participant "Notification Service"
+
 
 User -> UI: Chọn nhóm dự án và xác nhận xóa nhóm
 activate UI
@@ -30,11 +30,6 @@ alt Không còn dữ liệu liên quan
     activate DB
     DB --> System: Xóa thành công
     deactivate DB
-
-    System -> "Notification Service": Gửi thông báo nhóm đã bị xóa
-    activate "Notification Service"
-    "Notification Service" --> User: Thông báo nhóm đã bị xóa
-    deactivate "Notification Service"
 
     System --> UI: Xác nhận xóa nhóm thành công
     deactivate System

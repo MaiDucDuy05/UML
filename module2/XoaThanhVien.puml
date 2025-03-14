@@ -5,7 +5,6 @@ participant "U I" as UI
 participant "Authorization Service"
 participant "Project Group Service" as System
 participant "Database" as DB
-participant "Notification Service"
 
 User -> UI: Chọn thành viên cần xóa
 activate UI
@@ -24,17 +23,11 @@ activate DB
 
 alt Thành viên có thể xóa
     DB --> System: Cho phép xóa thành viên
-    deactivate DB
 
     System -> DB: Cập nhật danh sách thành viên
-    activate DB
     DB --> System: Xóa thành công
     deactivate DB
 
-    System -> "Notification Service": Gửi thông báo cập nhật
-    activate "Notification Service"
-    "Notification Service" --> User: Thông báo thành viên đã bị xóa
-    deactivate "Notification Service"
 
     System --> UI: Xác nhận xóa thành viên thành công
     deactivate System
