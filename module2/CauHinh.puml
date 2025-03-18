@@ -1,11 +1,10 @@
 @startuml
-actor "Admin/PM" as User
+actor "Admin/ PM" as User
 
-participant "U I" as UI
+participant "UI" as UI
 participant "Authorization Service"
 participant "Project Group Service" as System
 participant "Database" as DB
-participant "Notification Service"
 
 User -> UI: Nhập thông tin cấu hình và xác nhận lưu
 activate UI
@@ -24,17 +23,14 @@ activate DB
 
 alt Nhóm dự án tồn tại
     DB --> System: Nhóm hợp lệ, tiếp tục xử lý
-    deactivate DB
+    ' deactivate DB
 
     System -> DB: Lưu thay đổi cấu hình vào cơ sở dữ liệu
-    activate DB
+    ' activate DB
+
     DB --> System: Cập nhật thành công
     deactivate DB
 
-    System -> "Notification Service": Gửi thông báo cập nhật
-    activate "Notification Service"
-    "Notification Service" --> User: Thông báo cấu hình nhóm đã được cập nhật
-    deactivate "Notification Service"
 
     System --> UI: Xác nhận cập nhật thành công
     deactivate System

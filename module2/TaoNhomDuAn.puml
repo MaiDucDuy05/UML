@@ -31,9 +31,8 @@ alt Người dùng có quyền
 
     else Tên nhóm hợp lệ
         DB --> System: Cho phép tạo nhóm
-        deactivate DB
-        System -> DB: Lưu nhóm dự án mới
         activate DB
+        System -> DB: Lưu nhóm dự án mới
         DB --> System: Lưu thành công
         deactivate DB
         System --> UI: Xác nhận tạo nhóm thành công

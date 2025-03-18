@@ -5,7 +5,6 @@ participant "U I" as UI
 participant "Authorization Service"
 participant "Project Group Service" as System
 participant "Database" as DB
-participant "Notification Service"
 
 User -> UI: Nhập từ khóa tìm kiếm và chọn bộ lọc
 activate UI
@@ -29,12 +28,7 @@ alt Có dự án phù hợp
     System --> UI: Hiển thị danh sách dự án
     deactivate System
     UI --> User: Hiển thị danh sách dự án
-
-    UI -> "Notification Service": Gửi thông báo kết quả tìm kiếm
-    activate "Notification Service"
-    "Notification Service" --> User: Nhận thông báo về dự án tìm thấy
-    deactivate "Notification Service"
-
+    
 else Không có kết quả phù hợp
     DB --> System: Trả về kết quả rỗng
     deactivate DB
